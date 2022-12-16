@@ -101,6 +101,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define USE_N2K_MBED_CAN 6
 #define USE_N2K_ESP32_CAN 7
 #define USE_N2K_TEENSYX_CAN 8
+#define USE_N2K_STM32_CAN 9
 
 
 // Select right CAN according to prosessor
@@ -126,6 +127,8 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define USE_N2K_CAN USE_N2K_ESP32_CAN
 #elif defined(__IMXRT1062__)
 #define USE_N2K_CAN USE_N2K_TEENSYX_CAN
+#elif defined(STM32F1xx_HAL_CAN_H)
+#define USE_N2K_CAN USE_N2K_STM32_CAN
 #else
 #define USE_N2K_CAN USE_N2K_MCP_CAN
 #endif
@@ -182,6 +185,10 @@ tmbedStream serStream;
 #include <NMEA2000_esp32.h>       // https://github.com/ttlappalainen/NMEA2000_esp32
 tNMEA2000 &NMEA2000=*(new tNMEA2000_esp32());
 
+#elif USE_N2K_CAN == USE_N2K_STM32_CAN
+#include <NMEA2000_STM32.h>       //https://github.com/BitterAndReal/NMEA2000_STM32
+tNMEA2000 &NMEA2000=*(new tNMEA2000_STM32());
+
 #else  // Use USE_N2K_MCP_CAN
 // Use mcp_can library e.g. with Arduino Mega and external MCP2551 CAN bus chip
 // CAN_BUS_shield libraries will be originally found on https://github.com/Seeed-Studio/CAN_BUS_Shield
@@ -189,9 +196,6 @@ tNMEA2000 &NMEA2000=*(new tNMEA2000_esp32());
 // That works also with Maple mini and 8 MHz clock. Hopefully these improvements will be applied to
 // original library
 
-#if defined(__STM32F1__) // Maple
-#include <MapleIntCompatibility.h>
-#endif
 
 #include <SPI.h>
 #include <mcp_can.h> // https://github.com/ttlappalainen/CAN_BUS_Shield

@@ -29,14 +29,20 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <stdlib.h>
 
-#define DebugStream Serial
 
-// #define NMEA2000_FRAME_ERROR_DEBUG
+ //#define NMEA2000_FRAME_ERROR_DEBUG
 // #define NMEA2000_FRAME_IN_DEBUG
 // #define NMEA2000_FRAME_OUT_DEBUG
 // #define NMEA2000_MSG_DEBUG
 // #define NMEA2000_BUF_DEBUG
 // #define NMEA2000_DEBUG
+
+#if defined(ARDUINO)
+#define DebugStream Serial
+#elif defined(STM32) && (defined(NMEA2000_FRAME_ERROR_DEBUG) || defined(NMEA2000_FRAME_IN_DEBUG) || defined(NMEA2000_FRAME_OUT_DEBUG) || defined(NMEA2000_MSG_DEBUG) || defined(NMEA2000_BUF_DEBUG) || defined(NMEA2000_DEBUG))
+#include "N2kStream_STM32.hpp"
+N2kStream_STM32 DebugStream; // create N2kStream_STM32 instance as STM32 DebugStream class
+#endif
 
 #if defined(NMEA2000_FRAME_ERROR_DEBUG)
 # define N2kFrameErrDbgStart(fmt, args...) DebugStream.print(N2kMillis()); DebugStream.print(": "); DebugStream.print (fmt , ## args)
